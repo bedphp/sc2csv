@@ -1,12 +1,20 @@
-# sc2csv
+<a name="sc2csv"></a>
+
+<p align="center">
+  <img src="icon/ico.png" width="120" alt="sc2csv icon">
+</p>
+
+<h1 align="center">sc2csv</h1>
+
+<p align="center">
+  sc2csv is a Windows desktop tool for unpacking and packing Brawl Stars CSV files. It turns Supercell's compressed CSV containers into plain text and packs plain text back into containers, handling both older LZMA assets and the plaintext CSVs shipped by newer versions. Batch conversion and a macOS-style interface in Chinese, English and Japanese are built in.
+</p>
 
 English | [中文](#中文)
 
 > **Important**
 >
 > This repository does not provide any instructions on how to modify any Supercell game or their assets. All information and all Assets were taken from public sources. You assume all risks from the use of this tool.
-
-A Windows desktop tool for unpacking and packing Brawl Stars CSV files.
 
 - Single-page interface: scans `assets/csv_logic`, `assets/csv_client`, and `assets/localization`, in both directions:
   - **Unpack** container → plain CSV
@@ -196,15 +204,23 @@ CupertinoUi's baked font and symbol data derives from Apple's SF Pro / SF Symbol
 
 ---
 
-# 中文
+<a name="中文"></a>
+
+<p align="center">
+  <img src="icon/ico.png" width="120" alt="sc2csv 图标">
+</p>
+
+<h1 align="center">sc2csv</h1>
+
+<p align="center">
+  sc2csv 是一个 Windows 桌面端的 Brawl Stars CSV 工具：把 Supercell 的压缩 CSV 容器解包成明文，也能把明文重新打包成容器，兼容旧版 LZMA 资源和新版安装包里的明文 CSV。支持批量转换，界面为 macOS 风格，内置中文、英文和日文。
+</p>
 
 [English](#sc2csv) | 中文
 
 > **重要**
 >
 > 本仓库不提供任何修改 Supercell 游戏或其资源的说明。所有信息和资源均来自公开来源。使用本工具所产生的一切风险由使用者自行承担。
-
-Brawl Stars CSV 解包工具（Windows 桌面端）。
 
 - 单页界面：扫描 `assets/csv_logic`、`assets/csv_client`、`assets/localization`，支持两个方向：
   - **解包** 容器 → 明文 CSV
