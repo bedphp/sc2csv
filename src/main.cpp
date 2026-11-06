@@ -16,6 +16,7 @@
 
 #include "csv_codec.h"
 #include "csv_project.h"
+#include "error_text.h"
 #include "generated/AboutIcon.h"
 #include "i18n.h"
 
@@ -592,19 +593,6 @@ void RevealInExplorer(const std::filesystem::path& path) {
 std::string PickFolder(const std::string&) { return {}; }
 void RevealInExplorer(const std::filesystem::path&) {}
 #endif
-
-// The language the operating system is set to: Chinese and Japanese get their table, everything else English.
-std::string SystemLanguage() {
-#ifdef _WIN32
-    switch (PRIMARYLANGID(GetUserDefaultUILanguage())) {
-        case LANG_CHINESE: return "zh-cn";
-        case LANG_JAPANESE: return "ja-jp";
-        default: return "en-us";
-    }
-#else
-    return "en-us";
-#endif
-}
 
 // ---------------------------------------------------------------------------
 // Layout constants
@@ -1191,8 +1179,10 @@ int main(int argc, char** argv) {
             std::fprintf(stderr, "unknown language: %s\n", language_code.c_str());
     } else {
         // No --lang: follow the system's UI language, with English for everything else.
-        g_translator.SetLocale(SystemLanguage());
+        g_translator.SetLocale(sc2csv::SystemLanguage());
     }
+    // Conversion errors come from the shared core; route them through the selected table as well.
+    sc2csv::SetErrorTranslator([](std::string_view key) { return g_translator.Text(key); });
     g.language = int(g_translator.locale_index());
 
     return Run(options, [] {

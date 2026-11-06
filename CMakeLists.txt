@@ -133,6 +133,7 @@ target_compile_definitions(sc_lzma PRIVATE Z7_ST)
 add_library(sc_csv STATIC
     src/csv_codec.cpp
     src/csv_project.cpp
+    src/error_text.cpp
 )
 target_include_directories(sc_csv PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -248,11 +249,15 @@ endif()
 # ---------------------------------------------------------------------------
 add_executable(sc2csv_cli
     src/cli_main.cpp
+    src/i18n.cpp
 )
+add_dependencies(sc2csv_cli sc2csv_i18n)
+target_sources(sc2csv_cli PRIVATE "${I18N_INC}")
 set_target_properties(sc2csv_cli PROPERTIES OUTPUT_NAME "sc2csv-cli")
 target_compile_definitions(sc2csv_cli PRIVATE SC2CSV_VERSION="${PROJECT_VERSION}")
 target_include_directories(sc2csv_cli PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${I18N_GENERATED_DIR}"
 )
 target_link_libraries(sc2csv_cli PRIVATE sc_csv)
 if(TARGET sc2csv_icon)

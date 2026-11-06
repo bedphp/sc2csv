@@ -1,6 +1,7 @@
 #include "csv_project.h"
 
 #include "csv_codec.h"
+#include "error_text.h"
 
 #include <algorithm>
 #include <array>
@@ -124,18 +125,18 @@ std::string FormatBytes(std::uint64_t bytes) {
 bool ReadFileBytes(const std::filesystem::path& path, std::vector<std::uint8_t>& bytes, std::string& error) {
     std::ifstream input(path, std::ios::binary | std::ios::ate);
     if (!input) {
-        error = "无法打开文件";
+        error = ErrorText("error.open_failed", "无法打开文件");
         return false;
     }
     const std::streamsize size = input.tellg();
     if (size < 0) {
-        error = "无法读取文件大小";
+        error = ErrorText("error.read_size_failed", "无法读取文件大小");
         return false;
     }
     input.seekg(0, std::ios::beg);
     bytes.resize(std::size_t(size));
     if (size > 0 && !input.read(reinterpret_cast<char*>(bytes.data()), size)) {
-        error = "读取文件失败";
+        error = ErrorText("error.read_failed", "读取文件失败");
         return false;
     }
     return true;
@@ -144,13 +145,13 @@ bool ReadFileBytes(const std::filesystem::path& path, std::vector<std::uint8_t>&
 bool WriteFileBytes(const std::filesystem::path& path, std::span<const std::uint8_t> bytes, std::string& error) {
     std::ofstream out(path, std::ios::binary | std::ios::trunc);
     if (!out) {
-        error = "无法写入输出文件";
+        error = ErrorText("error.write_open_failed", "无法写入输出文件");
         return false;
     }
     if (!bytes.empty())
         out.write(reinterpret_cast<const char*>(bytes.data()), std::streamsize(bytes.size()));
     if (!out) {
-        error = "写入输出文件失败";
+        error = ErrorText("error.write_failed", "写入输出文件失败");
         return false;
     }
     return true;
@@ -160,7 +161,7 @@ bool ScanCsvFiles(const std::filesystem::path& input, std::vector<CsvFile>& file
     files.clear();
     std::error_code ec;
     if (!std::filesystem::exists(input, ec) || !std::filesystem::is_directory(input, ec)) {
-        error = "输入目录不存在";
+        error = ErrorText("error.input_missing", "输入目录不存在");
         return false;
     }
 
@@ -267,7 +268,7 @@ DecodeOutcome ConvertCsvFile(const CsvFile& file, const std::filesystem::path& o
     // In place the file is always rewritten: the source it would skip over is the input itself.
     if (!options.in_place && !options.overwrite && std::filesystem::exists(destination, ec)) {
         outcome.status = FileStatus::Skipped;
-        outcome.error = "输出已存在，已跳过";
+        outcome.error = ErrorText("error.output_exists", "输出已存在，已跳过");
         return outcome;
     }
 
@@ -287,7 +288,7 @@ DecodeOutcome ConvertCsvFile(const CsvFile& file, const std::filesystem::path& o
     if (!parent.empty()) {
         std::filesystem::create_directories(parent, ec);
         if (ec) {
-            outcome.error = "无法创建输出目录";
+            outcome.error = ErrorText("error.create_dir_failed", "无法创建输出目录");
             return outcome;
         }
     }

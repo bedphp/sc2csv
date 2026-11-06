@@ -130,6 +130,9 @@ build\bin\sc2csv-cli.exe --encode <input> --in-place
 | `--flat` | do not keep the input's subdirectories under `<output>` |
 | `--in-place` | write back over the input files; no `<output>` is needed |
 | `-q`, `--quiet` | print only failures and the summary |
+| `--lang <code>` | interface language: `zh-cn`, `en-us`, `ja-jp` |
+
+Without `--lang`, the CLI follows the system UI language (Chinese → `zh-cn`, Japanese → `ja-jp`, anything else → `en-us`), exactly like the window. Progress, summary, usage text and conversion errors are all translated.
 
 Exit status: `0` all files converted or skipped, `1` at least one file failed, `2` invalid arguments or the input could not be scanned.
 
@@ -363,6 +366,9 @@ build\bin\sc2csv-cli.exe --encode <输入> --in-place
 | `--flat` | 不保留输入的子目录结构 |
 | `--in-place` | 直接写回输入文件，不需要 `<输出>` |
 | `-q`、`--quiet` | 只输出失败项和汇总 |
+| `--lang <代码>` | 界面语言：`zh-cn`、`en-us`、`ja-jp` |
+
+不指定 `--lang` 时跟随系统界面语言（中文 → `zh-cn`，日文 → `ja-jp`，其他 → `en-us`），与 GUI 一致。进度、汇总、帮助和转换错误都会跟着切换。
 
 退出码：`0` 全部成功或跳过，`1` 至少一个文件失败，`2` 参数错误或输入无法扫描。
 

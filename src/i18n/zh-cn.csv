@@ -103,3 +103,37 @@ menu.file,文件
 menu.convert,转换
 menu.options,选项
 menu.mode_title,模式：%s
+error.unknown_format,无法识别的 CSV 格式
+error.unpacked_too_large,解压数据超过上限（512 MiB）
+error.lzma_decode_failed,LZMA 解码失败（错误码 %d）
+error.unpacked_size_mismatch,解压长度不符：期望 %zu 字节，实际 %zu 字节
+error.unpacked_empty,解压结果为空
+error.empty_csv,CSV 内容为空
+error.csv_too_large,CSV 过大，无法打包（超过 4 GiB）
+error.lzma_encode_failed,LZMA 压缩失败（错误码 %d）
+error.open_failed,无法打开文件
+error.read_size_failed,无法读取文件大小
+error.read_failed,读取文件失败
+error.write_open_failed,无法写入输出文件
+error.write_failed,写入输出文件失败
+error.input_missing,输入目录不存在
+error.output_exists,输出已存在，已跳过
+error.create_dir_failed,无法创建输出目录
+cli.help,"sc2csv-cli %s - Brawl Stars CSV 解包 / 打包工具\n\n用法：\n  sc2csv-cli --decode <输入> <输出> [选项]\n  sc2csv-cli --encode <输入> <输出> [选项]\n  sc2csv-cli --decode <输入> --in-place [选项]\n  sc2csv-cli --encode <输入> --in-place [选项]\n\n<输入> 可以是目录：扫描其中的 csv_logic、csv_client、localization 文件夹，\n没有这些文件夹时递归扫描所有 .csv；也可以是单个 .csv 文件。\n\n选项：\n  --decode        解包容器为明文 CSV\n  --encode        把明文 CSV 打包成容器\n  --overwrite     覆盖已存在的输出文件（默认跳过）\n  --flat          不保留输入的子目录结构\n  --in-place      直接写回输入文件，不需要 <输出>\n  -q, --quiet     只输出失败项和汇总\n  -h, --help      显示帮助\n  --version       显示版本\n  --lang <代码>   界面语言：zh-cn、en-us、ja-jp\n\n退出码：\n  0  全部成功或跳过\n  1  至少一个文件失败\n  2  参数错误，或输入无法扫描\n"
+cli.error.unknown_option,未知选项：%s
+cli.error.mode,请指定 --decode 或 --encode 之一
+cli.error.missing_input,缺少 <输入>
+cli.error.missing_output,缺少 <输出>（或使用 --in-place）
+cli.error.missing_lang,--lang 后面缺少语言代码
+cli.error.in_place_args,--in-place 只接受 <输入>
+cli.error.too_many,参数过多：%s
+cli.error.not_csv,输入不是 .csv 文件：%s
+cli.error.no_files,%s 下没有找到 .csv 文件
+cli.error.scan,错误：%s
+cli.error.language,未知语言：%s
+cli.line.ok,[%zu/%zu] 成功  %s
+cli.line.skip,[%zu/%zu] 跳过  %s
+cli.line.fail,[%zu/%zu] 失败  %s：%s
+cli.start,%s：%s -> %s（共 %zu 个文件）
+cli.summary,%s：共 %zu 个文件，成功 %d，跳过 %d，失败 %d，用时 %.2f 秒
+cli.in_place,原地覆盖

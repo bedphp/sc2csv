@@ -103,3 +103,37 @@ menu.file,File
 menu.convert,Convert
 menu.options,Options
 menu.mode_title,Mode: %s
+error.unknown_format,Unrecognized CSV format
+error.unpacked_too_large,Unpacked data exceeds the 512 MiB limit
+error.lzma_decode_failed,LZMA decompression failed (error %d)
+error.unpacked_size_mismatch,"Unpacked size mismatch: expected %zu bytes, got %zu bytes"
+error.unpacked_empty,The unpacked result is empty
+error.empty_csv,The CSV is empty
+error.csv_too_large,The CSV is too large to pack (over 4 GiB)
+error.lzma_encode_failed,LZMA compression failed (error %d)
+error.open_failed,Cannot open the file
+error.read_size_failed,Cannot read the file size
+error.read_failed,Failed to read the file
+error.write_open_failed,Cannot open the output file for writing
+error.write_failed,Failed to write the output file
+error.input_missing,The input directory does not exist
+error.output_exists,Output already exists; skipped
+error.create_dir_failed,Cannot create the output directory
+cli.help,"sc2csv-cli %s - Brawl Stars CSV unpacker / packer\n\nUsage:\n  sc2csv-cli --decode <input> <output> [options]\n  sc2csv-cli --encode <input> <output> [options]\n  sc2csv-cli --decode <input> --in-place [options]\n  sc2csv-cli --encode <input> --in-place [options]\n\n<input> is a directory: its csv_logic, csv_client and localization folders are\nscanned, or every .csv below it when those folders are absent. A single .csv\nfile is accepted too.\n\nOptions:\n  --decode        unpack containers to plain CSV\n  --encode        pack plain CSV into containers\n  --overwrite     overwrite existing output files (default: skip them)\n  --flat          do not keep the input's subdirectories under <output>\n  --in-place      write back over the input files; no <output> is needed\n  -q, --quiet     print only failures and the summary\n  -h, --help      show this help\n  --version       show the version\n  --lang <code>   interface language: zh-cn, en-us, ja-jp\n\nExit status:\n  0  all files converted or skipped\n  1  at least one file failed\n  2  invalid arguments, or the input could not be scanned\n"
+cli.error.unknown_option,unknown option: %s
+cli.error.mode,specify exactly one of --decode or --encode
+cli.error.missing_input,missing <input>
+cli.error.missing_output,missing <output> (or use --in-place)
+cli.error.missing_lang,missing a language code after --lang
+cli.error.in_place_args,--in-place takes only <input>
+cli.error.too_many,too many arguments: %s
+cli.error.not_csv,input is not a .csv file: %s
+cli.error.no_files,no .csv files found under %s
+cli.error.scan,error: %s
+cli.error.language,unknown language: %s
+cli.line.ok,[%zu/%zu] ok    %s
+cli.line.skip,[%zu/%zu] skip  %s
+cli.line.fail,[%zu/%zu] fail  %s: %s
+cli.start,"%s: %s -> %s (%zu file(s))"
+cli.summary,"%s: %zu file(s), %d converted, %d skipped, %d failed, %.2f s"
+cli.in_place,in place

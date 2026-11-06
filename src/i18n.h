@@ -18,6 +18,10 @@ struct LanguageInfo {
 // The languages built into this binary, in menu order (the $order line of each CSV under src/i18n).
 std::span<const LanguageInfo> AvailableLanguages();
 
+// The interface language the operating system is set to: "zh-cn" for Chinese, "ja-jp" for Japanese, "en-us"
+// otherwise. Both front ends use it when no --lang is given.
+std::string SystemLanguage();
+
 class Translator {
 public:
     // Parses every embedded table. Call once before SetLocale/Get.

@@ -1,6 +1,7 @@
 #include "csv_codec.h"
 
 #include "LzmaLib.h"
+#include "error_text.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -116,7 +117,7 @@ DecodeResult DecodeCsvData(std::span<const std::uint8_t> data) {
         return result;
     }
     if (format != CsvFormat::Lzma) {
-        result.error = "无法识别的 CSV 格式";
+        result.error = ErrorText("error.unknown_format", "无法识别的 CSV 格式");
         return result;
     }
 
@@ -151,20 +152,20 @@ DecodeResult DecodeCsvData(std::span<const std::uint8_t> data) {
         buffer_size = std::min<std::uint32_t>(buffer_size * 2u, kMaxUnpackedSize);
     }
     if (!known_size && dest_length == SizeT(buffer_size)) {
-        result.error = "解压数据超过上限（512 MiB）";
+        result.error = ErrorText("error.unpacked_too_large", "解压数据超过上限（512 MiB）");
         return result;
     }
     if (code != SZ_OK && !(!known_size && code == SZ_ERROR_INPUT_EOF)) {
-        result.error = "LZMA 解码失败（错误码 " + std::to_string(int(code)) + "）";
+        result.error = ErrorFormat("error.lzma_decode_failed", "LZMA 解码失败（错误码 %d）", int(code));
         return result;
     }
     if (known_size && dest_length != SizeT(header.unpacked_size)) {
-        result.error = "解压长度不符：期望 " + std::to_string(header.unpacked_size) + " 字节，实际 " +
-                       std::to_string(std::size_t(dest_length)) + " 字节";
+        result.error = ErrorFormat("error.unpacked_size_mismatch", "解压长度不符：期望 %zu 字节，实际 %zu 字节",
+                                   std::size_t(header.unpacked_size), std::size_t(dest_length));
         return result;
     }
     if (dest_length == 0) {
-        result.error = "解压结果为空";
+        result.error = ErrorText("error.unpacked_empty", "解压结果为空");
         return result;
     }
     output.resize(std::size_t(dest_length));
@@ -177,12 +178,12 @@ DecodeResult DecodeCsvData(std::span<const std::uint8_t> data) {
 EncodeResult EncodeCsvData(std::string_view text) {
     EncodeResult result;
     if (text.empty()) {
-        result.error = "CSV 内容为空";
+        result.error = ErrorText("error.empty_csv", "CSV 内容为空");
         return result;
     }
     // The container header stores the unpacked size as u32; a larger CSV cannot be described by it.
     if (text.size() > std::numeric_limits<std::uint32_t>::max()) {
-        result.error = "CSV 过大，无法打包（超过 4 GiB）";
+        result.error = ErrorText("error.csv_too_large", "CSV 过大，无法打包（超过 4 GiB）");
         return result;
     }
 
@@ -197,7 +198,7 @@ EncodeResult EncodeCsvData(std::string_view text) {
                                    reinterpret_cast<const std::uint8_t*>(text.data()), text.size(), properties,
                                    &properties_size, 5, kDefaultDictionary, 3, 0, 2, 32, 1);
     if (code != SZ_OK) {
-        result.error = "LZMA 压缩失败（错误码 " + std::to_string(int(code)) + "）";
+        result.error = ErrorFormat("error.lzma_encode_failed", "LZMA 压缩失败（错误码 %d）", int(code));
         return result;
     }
 

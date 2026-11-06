@@ -9,6 +9,10 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace sc2csv {
 namespace {
 
@@ -84,6 +88,18 @@ std::span<const LanguageInfo> AvailableLanguages() {
         return result;
     }();
     return languages;
+}
+
+std::string SystemLanguage() {
+#ifdef _WIN32
+    switch (PRIMARYLANGID(GetUserDefaultUILanguage())) {
+        case LANG_CHINESE: return "zh-cn";
+        case LANG_JAPANESE: return "ja-jp";
+        default: return "en-us";
+    }
+#else
+    return "en-us";
+#endif
 }
 
 // The three-line Supercell layout is irrelevant here; a table is $lang/$name/$order, an ID,Text header, then rows.

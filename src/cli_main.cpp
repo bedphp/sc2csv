@@ -1,14 +1,17 @@
 // sc2csv-cli — console version of sc2csv.
 //
 // It shares the conversion core (sc_csv) with the windowed program, so both directions, skip/overwrite semantics and
-// the in-place mode behave the same way. The only differences are how the input is described and how the progress is
-// printed.
+// the in-place mode behave the same way. The interface follows the system language, like the window, and --lang
+// overrides it.
 
 #include "csv_project.h"
+#include "error_text.h"
+#include "i18n.h"
 
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <cstdarg>
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
@@ -32,6 +35,32 @@ using sc2csv::DecodeOutcome;
 using sc2csv::FileStatus;
 using sc2csv::OutputFormat;
 
+sc2csv::Translator g_translator;
+
+std::string Tr(std::string_view key) {
+    return g_translator.Text(key);
+}
+
+// A translated printf-style template. The tables keep the format specifiers (%zu, %d, %s, %.2f).
+std::string TrFormat(const char* key, ...) {
+    const std::string format = g_translator.Text(key);
+    char buffer[512];
+    va_list args;
+    va_start(args, key);
+    const int needed = std::vsnprintf(buffer, sizeof(buffer), format.c_str(), args);
+    va_end(args);
+    if (needed < 0)
+        return format;
+    if (std::size_t(needed) < sizeof(buffer))
+        return std::string(buffer, std::size_t(needed));
+
+    std::string result(std::size_t(needed), '\0');
+    va_start(args, key);
+    std::vsnprintf(result.data(), result.size() + 1, format.c_str(), args);
+    va_end(args);
+    return result;
+}
+
 struct Options {
     bool decode = false;
     bool encode = false;
@@ -39,38 +68,13 @@ struct Options {
     bool flat = false;
     bool in_place = false;
     bool quiet = false;
+    std::string language;
     std::filesystem::path input;
     std::filesystem::path output;
 };
 
 void PrintUsage(std::FILE* out) {
-    std::fprintf(out,
-                 "sc2csv-cli %s - Brawl Stars CSV unpacker / packer\n"
-                 "\n"
-                 "Usage:\n"
-                 "  sc2csv-cli --decode <input> <output> [options]\n"
-                 "  sc2csv-cli --encode <input> <output> [options]\n"
-                 "  sc2csv-cli --decode <input> --in-place [options]\n"
-                 "  sc2csv-cli --encode <input> --in-place [options]\n"
-                 "\n"
-                 "<input> is a directory: its csv_logic, csv_client and localization folders are scanned, or every\n"
-                 ".csv below it when those folders are absent. A single .csv file is accepted too.\n"
-                 "\n"
-                 "Options:\n"
-                 "  --decode        unpack containers to plain CSV\n"
-                 "  --encode        pack plain CSV into containers\n"
-                 "  --overwrite     overwrite existing output files (default: skip them)\n"
-                 "  --flat          do not keep the input's subdirectories under <output>\n"
-                 "  --in-place      write back over the input files; no <output> is needed\n"
-                 "  -q, --quiet     print only failures and the summary\n"
-                 "  -h, --help      show this help\n"
-                 "  --version       show the version\n"
-                 "\n"
-                 "Exit status:\n"
-                 "  0  all files converted or skipped\n"
-                 "  1  at least one file failed\n"
-                 "  2  invalid arguments, or the input could not be scanned\n",
-                 SC2CSV_VERSION);
+    std::fprintf(out, "%s", TrFormat("cli.help", SC2CSV_VERSION).c_str());
 }
 
 bool HasCsvExtension(const std::filesystem::path& path) {
@@ -86,7 +90,7 @@ bool CollectFiles(const std::filesystem::path& input, std::vector<CsvFile>& file
     std::error_code ec;
     if (std::filesystem::is_regular_file(input, ec)) {
         if (!HasCsvExtension(input)) {
-            error = "input is not a .csv file: " + sc2csv::PathToUtf8(input);
+            error = TrFormat("cli.error.not_csv", sc2csv::PathToUtf8(input).c_str());
             return false;
         }
         CsvFile file;
@@ -104,7 +108,8 @@ bool CollectFiles(const std::filesystem::path& input, std::vector<CsvFile>& file
 
 bool Parse(const std::vector<std::string>& args, Options& options, bool& help, bool& version, std::string& error) {
     std::vector<std::string> positional;
-    for (const std::string& argument : args) {
+    for (std::size_t index = 0; index < args.size(); ++index) {
+        const std::string& argument = args[index];
         if (argument == "-h" || argument == "--help") {
             help = true;
         } else if (argument == "--version") {
@@ -121,8 +126,14 @@ bool Parse(const std::vector<std::string>& args, Options& options, bool& help, b
             options.in_place = true;
         } else if (argument == "-q" || argument == "--quiet") {
             options.quiet = true;
+        } else if (argument == "--lang") {
+            if (index + 1 >= args.size()) {
+                error = Tr("cli.error.missing_lang");
+                return false;
+            }
+            options.language = args[++index];
         } else if (!argument.empty() && argument.front() == '-') {
-            error = "unknown option: " + argument;
+            error = TrFormat("cli.error.unknown_option", argument.c_str());
             return false;
         } else {
             positional.push_back(argument);
@@ -133,27 +144,27 @@ bool Parse(const std::vector<std::string>& args, Options& options, bool& help, b
         return true;
 
     if (options.decode == options.encode) {
-        error = "specify exactly one of --decode or --encode";
+        error = Tr("cli.error.mode");
         return false;
     }
     if (positional.empty()) {
-        error = "missing <input>";
+        error = Tr("cli.error.missing_input");
         return false;
     }
     options.input = sc2csv::PathFromUtf8(positional[0]);
 
     if (options.in_place) {
         if (positional.size() > 1) {
-            error = "--in-place takes only <input>";
+            error = Tr("cli.error.in_place_args");
             return false;
         }
     } else {
         if (positional.size() < 2) {
-            error = "missing <output> (or use --in-place)";
+            error = Tr("cli.error.missing_output");
             return false;
         }
         if (positional.size() > 2) {
-            error = "too many arguments: " + positional[2];
+            error = TrFormat("cli.error.too_many", positional[2].c_str());
             return false;
         }
         options.output = sc2csv::PathFromUtf8(positional[1]);
@@ -167,11 +178,12 @@ int Run(const Options& options) {
     std::vector<CsvFile> files;
     std::string error;
     if (!CollectFiles(options.input, files, error)) {
-        std::fprintf(stderr, "error: %s\n", error.c_str());
+        std::fprintf(stderr, "%s\n", TrFormat("cli.error.scan", error.c_str()).c_str());
         return 2;
     }
     if (files.empty()) {
-        std::fprintf(stderr, "error: no .csv files found under %s\n", sc2csv::PathToUtf8(options.input).c_str());
+        std::fprintf(stderr, "%s\n",
+                     TrFormat("cli.error.no_files", sc2csv::PathToUtf8(options.input).c_str()).c_str());
         return 2;
     }
 
@@ -181,11 +193,12 @@ int Run(const Options& options) {
     convert.in_place = options.in_place;
     convert.format = options.decode ? OutputFormat::Text : OutputFormat::Container;
 
+    const std::string mode = Tr(options.decode ? "mode.unpack" : "mode.pack");
     if (!options.quiet) {
-        const std::string output =
-            options.in_place ? "in place" : sc2csv::PathToUtf8(options.output);
-        std::printf("%s: %s -> %s (%zu file(s))\n", options.decode ? "unpack" : "pack",
-                    sc2csv::PathToUtf8(options.input).c_str(), output.c_str(), files.size());
+        const std::string output = options.in_place ? Tr("cli.in_place") : sc2csv::PathToUtf8(options.output);
+        std::printf("%s\n", TrFormat("cli.start", mode.c_str(), sc2csv::PathToUtf8(options.input).c_str(),
+                                     output.c_str(), files.size())
+                                .c_str());
     }
 
     const auto started = std::chrono::steady_clock::now();
@@ -199,26 +212,48 @@ int Run(const Options& options) {
         if (outcome.status == FileStatus::Done) {
             ++converted;
             if (!options.quiet)
-                std::printf("[%zu/%zu] ok    %s\n", index, files.size(), file.relative.c_str());
+                std::printf("%s\n", TrFormat("cli.line.ok", index, files.size(), file.relative.c_str()).c_str());
         } else if (outcome.status == FileStatus::Skipped) {
             ++skipped;
             if (!options.quiet)
-                std::printf("[%zu/%zu] skip  %s\n", index, files.size(), file.relative.c_str());
+                std::printf("%s\n", TrFormat("cli.line.skip", index, files.size(), file.relative.c_str()).c_str());
         } else {
             ++failed;
-            std::fprintf(stderr, "[%zu/%zu] fail  %s: %s\n", index, files.size(), file.relative.c_str(),
-                         outcome.error.c_str());
+            std::fprintf(stderr, "%s\n",
+                         TrFormat("cli.line.fail", index, files.size(), file.relative.c_str(),
+                                  outcome.error.c_str())
+                             .c_str());
         }
     }
 
     const double seconds =
         std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
-    std::printf("%s: %zu file(s), %d converted, %d skipped, %d failed, %.2f s\n",
-                options.decode ? "unpack" : "pack", files.size(), converted, skipped, failed, seconds);
+    std::printf("%s\n", TrFormat("cli.summary", mode.c_str(), files.size(), converted, skipped, failed, seconds).c_str());
     return failed == 0 ? 0 : 1;
 }
 
 int RunMain(const std::vector<std::string>& args) {
+    // Resolve the language before parsing, so even a usage error is printed in the language --lang asks for.
+    std::string requested;
+    for (std::size_t index = 0; index + 1 < args.size(); ++index) {
+        if (args[index] == "--lang")
+            requested = args[index + 1];
+    }
+
+    std::string load_error;
+    if (!g_translator.LoadEmbedded(load_error)) {
+        std::fprintf(stderr, "sc2csv-cli: %s\n", load_error.c_str());
+        return 2;
+    }
+    if (!requested.empty() && !g_translator.SetLocale(requested)) {
+        std::fprintf(stderr, "%s\n", TrFormat("cli.error.language", requested.c_str()).c_str());
+        return 2;
+    }
+    if (requested.empty())
+        g_translator.SetLocale(sc2csv::SystemLanguage());
+    // Conversion errors come from the shared core; route them through the selected table as well.
+    sc2csv::SetErrorTranslator([](std::string_view key) { return g_translator.Text(key); });
+
     Options options;
     bool help = false;
     bool version = false;

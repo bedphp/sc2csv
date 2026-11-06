@@ -103,3 +103,37 @@ menu.file,ファイル
 menu.convert,変換
 menu.options,オプション
 menu.mode_title,モード：%s
+error.unknown_format,認識できない CSV 形式です
+error.unpacked_too_large,展開データが上限（512 MiB）を超えています
+error.lzma_decode_failed,LZMA の展開に失敗しました（エラー %d）
+error.unpacked_size_mismatch,展開サイズが一致しません：期待 %zu バイト、実際 %zu バイト
+error.unpacked_empty,展開結果が空です
+error.empty_csv,CSV の内容が空です
+error.csv_too_large,CSV が大きすぎてパックできません（4 GiB 超）
+error.lzma_encode_failed,LZMA の圧縮に失敗しました（エラー %d）
+error.open_failed,ファイルを開けません
+error.read_size_failed,ファイルサイズを読み取れません
+error.read_failed,ファイルの読み取りに失敗しました
+error.write_open_failed,出力ファイルを書き込み用に開けません
+error.write_failed,出力ファイルの書き込みに失敗しました
+error.input_missing,入力ディレクトリが存在しません
+error.output_exists,出力が既に存在するためスキップしました
+error.create_dir_failed,出力ディレクトリを作成できません
+cli.help,"sc2csv-cli %s - Brawl Stars CSV 展開 / 圧縮ツール\n\n使い方:\n  sc2csv-cli --decode <入力> <出力> [オプション]\n  sc2csv-cli --encode <入力> <出力> [オプション]\n  sc2csv-cli --decode <入力> --in-place [オプション]\n  sc2csv-cli --encode <入力> --in-place [オプション]\n\n<入力> はディレクトリ（csv_logic、csv_client、localization をスキャンし、\n存在しない場合は配下の .csv をすべて走査）または単一の .csv ファイルです。\n\nオプション:\n  --decode        コンテナを展開して明文 CSV にします\n  --encode        明文 CSV をコンテナに圧縮します\n  --overwrite     既存の出力ファイルを上書きします（既定はスキップ）\n  --flat          入力のサブディレクトリ構造を保持しません\n  --in-place      入力ファイルを直接書き換えます（<出力> は不要）\n  -q, --quiet     失敗と集計だけを表示します\n  -h, --help      このヘルプを表示します\n  --version       バージョンを表示します\n  --lang <コード> 表示言語: zh-cn、en-us、ja-jp\n\n終了ステータス:\n  0  すべて成功またはスキップ\n  1  1 つ以上のファイルが失敗\n  2  引数が不正、または入力をスキャンできない\n"
+cli.error.unknown_option,不明なオプション: %s
+cli.error.mode,--decode または --encode のどちらか一方を指定してください
+cli.error.missing_input,<入力> がありません
+cli.error.missing_output,<出力> がありません（--in-place を使う場合は不要）
+cli.error.missing_lang,--lang の後に言語コードがありません
+cli.error.in_place_args,--in-place は <入力> のみを受け取ります
+cli.error.too_many,引数が多すぎます: %s
+cli.error.not_csv,入力が .csv ファイルではありません: %s
+cli.error.no_files,%s の下に .csv ファイルが見つかりません
+cli.error.scan,エラー: %s
+cli.error.language,不明な言語: %s
+cli.line.ok,[%zu/%zu] 完了  %s
+cli.line.skip,[%zu/%zu] スキップ  %s
+cli.line.fail,[%zu/%zu] 失敗  %s: %s
+cli.start,%s: %s -> %s（%zu ファイル）
+cli.summary,%s: %zu ファイル、成功 %d、スキップ %d、失敗 %d、%.2f 秒
+cli.in_place,上書き
