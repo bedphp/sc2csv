@@ -24,7 +24,7 @@
 #endif
 
 #ifndef SC2CSV_VERSION
-#define SC2CSV_VERSION "0.1.0"
+#define SC2CSV_VERSION "0.1.1"
 #endif
 
 namespace {
