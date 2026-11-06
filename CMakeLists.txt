@@ -239,3 +239,32 @@ if(WIN32)
         )
     endif()
 endif()
+
+# ---------------------------------------------------------------------------
+# sc2csv-cli: the console front end
+#
+# It links only sc_csv (no ImGui, GLFW or Cupertino), so it has no window and always keeps its console, including in
+# Release. The conversion options and semantics are those of the windowed program.
+# ---------------------------------------------------------------------------
+add_executable(sc2csv_cli
+    src/cli_main.cpp
+)
+set_target_properties(sc2csv_cli PROPERTIES OUTPUT_NAME "sc2csv-cli")
+target_compile_definitions(sc2csv_cli PRIVATE SC2CSV_VERSION="${PROJECT_VERSION}")
+target_include_directories(sc2csv_cli PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+target_link_libraries(sc2csv_cli PRIVATE sc_csv)
+if(TARGET sc2csv_icon)
+    add_dependencies(sc2csv_cli sc2csv_icon)
+endif()
+if(WIN32)
+    # The same icon resource as the windowed program, so Explorer shows the right icon for the console executable.
+    if(CMAKE_RC_COMPILER AND TARGET sc2csv_icon)
+        target_sources(sc2csv_cli PRIVATE "${ICON_RC}")
+    endif()
+    if(MSVC)
+        # wmain receives the command line as UTF-16, so paths with non-ASCII characters stay intact.
+        target_link_options(sc2csv_cli PRIVATE "/SUBSYSTEM:CONSOLE" "/ENTRY:wmainCRTStartup")
+    endif()
+endif()

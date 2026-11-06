@@ -72,6 +72,8 @@ The second directory reuses the dependency sources already fetched by the first 
 
 The two configurations differ only in subsystem (a `$<CONFIG:Debug>` generator expression in [CMakeLists.txt](CMakeLists.txt)); the entry point is still `main`. Release closes the console, but headless `--decode` / `--encode` still work and write through the caller's console.
 
+Both configurations also build `sc2csv-cli.exe`, the console front end described under [Running](#running).
+
 ### Icon
 
 `icon/ico.png` is the only icon source. At build time [cmake/GenerateIcon.py](cmake/GenerateIcon.py) generates:
@@ -104,15 +106,34 @@ build\bin\sc2csv.exe --zoom 1.2
 
 Without `--lang`, the system UI language is used: Chinese → `zh-cn`, Japanese → `ja-jp`, anything else → `en-us`.
 
-Headless batch conversion (keeps the output directory structure unless `--flat`):
+### Command-line version
+
+`build\bin\sc2csv-cli.exe` is the console build. It links only the conversion core, always keeps its console (Release included), and uses the same options and semantics as the windowed program:
 
 ```bat
-build\bin\sc2csv.exe --decode <input directory> <output directory> [--overwrite] [--flat]
-build\bin\sc2csv.exe --encode <input directory> <output directory> [--overwrite] [--flat]
+:: container -> plain CSV
+build\bin\sc2csv-cli.exe --decode <input> <output> [--overwrite] [--flat]
+
+:: plain CSV -> container
+build\bin\sc2csv-cli.exe --encode <input> <output> [--overwrite] [--flat]
+
+:: rewrite the input files in place
+build\bin\sc2csv-cli.exe --decode <input> --in-place
+build\bin\sc2csv-cli.exe --encode <input> --in-place
 ```
 
-- `--overwrite` overwrites existing output (otherwise existing files are skipped)
-- `--flat` does not preserve the input's subdirectory structure
+`<input>` is a directory (its `csv_logic`, `csv_client` and `localization` folders are scanned, or every `.csv` below it when those folders are absent) or a single `.csv` file.
+
+| Option | Effect |
+|---|---|
+| `--overwrite` | overwrite existing output files (default: skip them) |
+| `--flat` | do not keep the input's subdirectories under `<output>` |
+| `--in-place` | write back over the input files; no `<output>` is needed |
+| `-q`, `--quiet` | print only failures and the summary |
+
+Exit status: `0` all files converted or skipped, `1` at least one file failed, `2` invalid arguments or the input could not be scanned.
+
+`--help` prints the full usage. The windowed exe still accepts `--decode` / `--encode` as well, but `sc2csv-cli.exe` is the one to script against.
 
 - `F12`: the CupertinoUi debug page (widget highlighting, widget-tree dump, UI script playback)
 - The window is borderless and macOS-styled; use the traffic lights at the top right, drag the title bar, or drag an edge to resize.
@@ -173,6 +194,7 @@ sc2csv/
 │  └─ ico.png             the only icon source
 ├─ src/
 │  ├─ main.cpp        interface, scan/unpack scheduling, log
+│  ├─ cli_main.cpp    console front end (sc2csv-cli)
 │  ├─ csv_codec.*     CSV container header parsing, LZMA decoding, three-row CSV parsing
 │  ├─ csv_project.*   directory scanning, output paths, per-file conversion, UTF-8 paths
 │  ├─ i18n.h/.cpp     translation table loading and lookup
@@ -281,6 +303,8 @@ configure.bat -Config Debug
 两种配置只有子系统不同（[CMakeLists.txt](CMakeLists.txt) 里按 `$<CONFIG:Debug>` 生成器表达式），入口仍是 `main`。
 Release 关闭控制台后，无界面的 `--decode` / `--encode` 依然可用，输出会走调用方的控制台。
 
+两种配置也会同时构建 `sc2csv-cli.exe`，即[运行时](#运行时)里的命令行版本。
+
 ### 图标
 
 `icon/ico.png` 是唯一的图标源，构建时由 [cmake/GenerateIcon.py](cmake/GenerateIcon.py) 自动生成：
@@ -315,15 +339,34 @@ build\bin\sc2csv.exe --zoom 1.2
 
 不指定 `--lang` 时按系统界面语言自动选择：中文 → `zh-cn`，日文 → `ja-jp`，其他 → `en-us`。
 
-无界面批量转换（保持输出目录结构，除非 `--flat`）：
+### 命令行版本
+
+`build\bin\sc2csv-cli.exe` 是控制台版本。它只链接转换核心，Release 下也始终保留控制台，参数和语义与 GUI 版本一致：
 
 ```bat
-build\bin\sc2csv.exe --decode <输入目录> <输出目录> [--overwrite] [--flat]
-build\bin\sc2csv.exe --encode <输入目录> <输出目录> [--overwrite] [--flat]
+:: 容器 → 明文 CSV
+build\bin\sc2csv-cli.exe --decode <输入> <输出> [--overwrite] [--flat]
+
+:: 明文 CSV → 容器
+build\bin\sc2csv-cli.exe --encode <输入> <输出> [--overwrite] [--flat]
+
+:: 直接改写输入目录里的文件
+build\bin\sc2csv-cli.exe --decode <输入> --in-place
+build\bin\sc2csv-cli.exe --encode <输入> --in-place
 ```
 
-- `--overwrite` 覆盖已存在的输出（否则跳过已存在的）
-- `--flat` 不保留输入的子目录结构
+`<输入>` 可以是目录（自动扫描其中的 `csv_logic`、`csv_client`、`localization`，没有这些目录时递归扫描所有 `.csv`），也可以是单个 `.csv` 文件。
+
+| 选项 | 作用 |
+|---|---|
+| `--overwrite` | 覆盖已存在的输出文件（默认跳过） |
+| `--flat` | 不保留输入的子目录结构 |
+| `--in-place` | 直接写回输入文件，不需要 `<输出>` |
+| `-q`、`--quiet` | 只输出失败项和汇总 |
+
+退出码：`0` 全部成功或跳过，`1` 至少一个文件失败，`2` 参数错误或输入无法扫描。
+
+`--help` 查看完整用法。GUI 的 exe 也仍然接受 `--decode` / `--encode`，但脚本里建议使用 `sc2csv-cli.exe`。
 
 - `F12`：CupertinoUi 调试工具页（控件高亮、控件树导出、UI 脚本回放）
 - 窗口为无边框 macOS 风格，可用右上角红绿灯、拖动标题栏、拖动边缘缩放
@@ -390,6 +433,7 @@ sc2csv/
 │  └─ ico.png             唯一的图标源
 ├─ src/
 │  ├─ main.cpp        界面、扫描/解包调度、日志
+│  ├─ cli_main.cpp    命令行入口（sc2csv-cli）
 │  ├─ csv_codec.*     CSV 容器头解析、LZMA 解码、三行式 CSV 解析
 │  ├─ csv_project.*   目录扫描、输出路径、单文件转换、UTF-8 路径
 │  ├─ i18n.h/.cpp     语言表加载与查询
