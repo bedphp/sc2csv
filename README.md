@@ -7,7 +7,7 @@
 <h1 align="center">sc2csv</h1>
 
 <p align="center">
-  sc2csv is a Windows desktop tool for unpacking and packing Brawl Stars CSV files. It turns Supercell's compressed CSV containers into plain text and packs plain text back into containers, handling both older LZMA assets and the plaintext CSVs shipped by newer versions. Batch conversion and a macOS-style interface in Chinese, English and Japanese are built in.
+  sc2csv is a Windows desktop tool for unpacking and packing Supercell CSV files. It turns Supercell's compressed CSV containers into plain text and packs plain text back into containers, handling both older LZMA assets and the plaintext CSVs shipped by newer versions. Batch conversion and a macOS-style interface in Chinese, English and Japanese are built in.
 </p>
 
 English | [中文](#中文)
@@ -239,7 +239,7 @@ CupertinoUi's baked font and symbol data derives from Apple's SF Pro / SF Symbol
 <h1 align="center">sc2csv</h1>
 
 <p align="center">
-  sc2csv 是一个 Windows 桌面端的 Brawl Stars CSV 工具：把 Supercell 的压缩 CSV 容器解包成明文，也能把明文重新打包成容器，兼容旧版 LZMA 资源和新版安装包里的明文 CSV。支持批量转换，界面为 macOS 风格，内置中文、英文和日文。
+  sc2csv 是一个 Windows 桌面端的 Supercell CSV 工具：把 Supercell 的压缩 CSV 容器解包成明文，也能把明文重新打包成容器，兼容旧版 LZMA 资源和新版安装包里的明文 CSV。支持批量转换，界面为 macOS 风格，内置中文、英文和日文。
 </p>
 
 [English](#sc2csv) | 中文
