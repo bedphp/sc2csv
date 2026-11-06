@@ -35,7 +35,7 @@ public:
     std::string_view LocaleCode() const;
     std::string_view LocaleName() const;
 
-    // Looks a key up in the current language, then in the fallback (zh-cn when embedded), then returns the key.
+    // Looks a key up in the current language, then in English (the fallback when embedded), then returns the key.
     std::string_view Get(std::string_view key) const;
     std::string Text(std::string_view key) const;
 

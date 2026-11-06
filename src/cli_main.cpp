@@ -245,12 +245,15 @@ int RunMain(const std::vector<std::string>& args) {
         std::fprintf(stderr, "sc2csv-cli: %s\n", load_error.c_str());
         return 2;
     }
-    if (!requested.empty() && !g_translator.SetLocale(requested)) {
-        std::fprintf(stderr, "%s\n", TrFormat("cli.error.language", requested.c_str()).c_str());
-        return 2;
-    }
-    if (requested.empty())
+    if (!requested.empty()) {
+        if (!g_translator.SetLocale(requested)) {
+            // An unknown code warns and continues in English rather than refusing to run.
+            g_translator.SetLocale("en-us");
+            std::fprintf(stderr, "%s\n", TrFormat("cli.error.language", requested.c_str()).c_str());
+        }
+    } else {
         g_translator.SetLocale(sc2csv::SystemLanguage());
+    }
     // Conversion errors come from the shared core; route them through the selected table as well.
     sc2csv::SetErrorTranslator([](std::string_view key) { return g_translator.Text(key); });
 

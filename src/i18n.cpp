@@ -193,10 +193,10 @@ bool Translator::LoadEmbedded(std::string& error) {
         return false;
     }
 
-    // Missing keys fall back to Simplified Chinese when it is embedded, otherwise to the first language.
+    // Missing keys fall back to English when it is embedded, otherwise to the first language.
     fallback_ = 0;
     for (std::size_t i = 0; i < tables_.size(); ++i) {
-        if (tables_[i].code == "zh-cn") {
+        if (tables_[i].code == "en-us") {
             fallback_ = i;
             break;
         }

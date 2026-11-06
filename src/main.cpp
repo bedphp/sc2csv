@@ -1175,8 +1175,10 @@ int main(int argc, char** argv) {
     if (!g_translator.LoadEmbedded(locale_error))
         std::fprintf(stderr, "i18n: %s\n", locale_error.c_str());
     if (!language_code.empty()) {
-        if (!g_translator.SetLocale(language_code))
-            std::fprintf(stderr, "unknown language: %s\n", language_code.c_str());
+        if (!g_translator.SetLocale(language_code)) {
+            std::fprintf(stderr, "unknown language: %s, falling back to en-us\n", language_code.c_str());
+            g_translator.SetLocale("en-us");
+        }
     } else {
         // No --lang: follow the system's UI language, with English for everything else.
         g_translator.SetLocale(sc2csv::SystemLanguage());

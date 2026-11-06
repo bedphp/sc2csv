@@ -180,6 +180,7 @@ Language tables live in `src/i18n/*.csv`. At build time `cmake/GenerateI18n.cmak
 - Adding a language: drop a `.csv` with the same format into `src/i18n/` and rebuild; CMake regenerates the table
 - The Language menu switches immediately; `--lang` picks the startup language
 - Without `--lang` the system UI language is followed (Chinese/Japanese, English otherwise)
+- A key missing from a table falls back to English; an unknown `--lang` code warns and falls back to English too
 - Log lines already written are not re-translated; later lines use the new language
 
 `sc2csv::AvailableLanguages()` returns the built-in languages (code + name).
@@ -422,6 +423,7 @@ build\bin\sc2csv-cli.exe --encode <输入> --in-place
 - 新增语言：往 `src/i18n/` 放一个同格式的 `.csv`，重新构建即可，CMake 会自动重新生成
 - 菜单栏「语言」即时切换语言；`--lang` 指定启动语言
 - 没有 `--lang` 时跟随系统界面语言（中文/日文，其余英文）
+- 某个语言缺少某个键时回退到英文；`--lang` 指定的语言不存在时也会提示并回退到英文
 - 日志里已经写入的行不会跟着切换重译，之后的新日志使用新语言
 
 `sc2csv::AvailableLanguages()` 返回内置语言（代码 + 名称）列表。
