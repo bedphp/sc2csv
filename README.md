@@ -1,5 +1,201 @@
 # sc2csv
 
+English | [中文](#中文)
+
+A Windows desktop tool for unpacking and packing Brawl Stars CSV files.
+
+- Single-page interface: scans `assets/csv_logic`, `assets/csv_client`, and `assets/localization`, in both directions:
+  - **Unpack** container → plain CSV
+  - **Pack** plain CSV → container
+- The log folds away at the bottom of the main page: it records scanning and conversion as they happen, and when expanded can be filtered by level, cleared, and exported.
+
+Parsing SC bundles is outside the scope of this tool.
+
+## Supported forms
+
+| Form | Characteristics | Unpack | Pack |
+|---|---|---|:---:|
+| LZMA container | `0x5D` + 256 KiB dictionary + u32 unpacked size + raw LZMA1 | ✔ | ✔ |
+| Plain CSV | Text as-is (newer installs ship this) | copied as-is | ✔ |
+
+Scanning detects the actual form and shows it in the "Format" column, so one window handles both old compressed packages and new plaintext ones.
+
+## CSV container format
+
+The `.csv` files in the three `assets/` directories are not text; they are:
+
+| Offset | Size | Meaning |
+|---:|---:|---|
+| `0x00` | 1 | LZMA properties, fixed `0x5D` (lc=3, lp=0, pb=2) |
+| `0x01` | 4 | dictionary size, LE, fixed `0x00040000` (256 KiB) |
+| `0x05` | 4 | unpacked size, LE u32 |
+| `0x09` | ... | raw LZMA1 stream, **no EOS marker** |
+
+The decoded text is Supercell's standard three-row CSV: column names on row 1, types on row 2, data from row 3.
+
+## Build
+
+Requires Visual Studio with the Desktop development with C++ workload. The first configure uses CMake `FetchContent` to download Dear ImGui (docking branch) and GLFW 3.4, so it needs network access.
+
+```bat
+:: Release (default)
+build-release.bat          :: same as build.bat
+
+:: Debug
+build-debug.bat            :: same as build.bat -Config Debug
+
+:: Configure only
+configure.bat              :: Release
+configure.bat -Config Debug
+```
+
+Each configuration gets its own build directory: Ninja fixes the configuration type at configure time, and one directory cannot hold both:
+
+| Configuration | Build directory | Output | Console window |
+|---|---|---|---|
+| Release | `build\` | `build\bin\sc2csv.exe` | none (`/SUBSYSTEM:WINDOWS`) |
+| Debug | `build-debug\` | `build-debug\bin\sc2csv.exe` | yes (console subsystem, `fprintf(stderr, …)` visible) |
+
+The second directory reuses the dependency sources already fetched by the first (`FETCHCONTENT_SOURCE_DIR_GLFW/IMGUI`), so a checkout needs network access only once. The scripts are backed by PowerShell and take the same arguments: `.\build.ps1 -Config Debug`.
+
+The two configurations differ only in subsystem (a `$<CONFIG:Debug>` generator expression in [CMakeLists.txt](CMakeLists.txt)); the entry point is still `main`. Release closes the console, but headless `--decode` / `--encode` still work and write through the caller's console.
+
+### Icon
+
+`icon/ico.png` is the only icon source. At build time [cmake/GenerateIcon.py](cmake/GenerateIcon.py) generates:
+
+| Output | Purpose |
+|---|---|
+| `build/generated/icon/sc2csv.ico` | Multi-size icon (16 / 24 / 32 / 48 / 64 / 128 / 256 px), compiled into the exe by rc.exe |
+| `build/generated/icon/sc2csv.rc` | Resource script (`IDI_APPICON 101`) |
+| `src/generated/AboutIcon.h` | 128 px PNG shown by the About panel |
+
+After editing `icon/ico.png`, just rebuild; there is no need to export an `.ico` by hand. Explorer, the taskbar, and Alt+Tab read the icon from the executable's resource section, and the window icon loads from the same resource, so no `.ico` file needs to sit next to the exe.
+
+Generating the icon requires Python 3 and Pillow (`pip install pillow`). Without Python the step is skipped: the About panel uses the committed `AboutIcon.h`, and the executable gets no icon resource.
+
+## Running
+
+```bat
+:: Open the interface
+build\bin\sc2csv.exe
+
+:: Specify input/output directories
+build\bin\sc2csv.exe --input <assets directory> --output <output directory>
+
+:: Choose the interface language (zh-cn / en-us / ja-jp); the Language menu switches at any time
+build\bin\sc2csv.exe --lang ja-jp
+
+:: Interface zoom (0.75-2, default 1.1); scales the UI without changing the window size
+build\bin\sc2csv.exe --zoom 1.2
+```
+
+Without `--lang`, the system UI language is used: Chinese → `zh-cn`, Japanese → `ja-jp`, anything else → `en-us`.
+
+Headless batch conversion (keeps the output directory structure unless `--flat`):
+
+```bat
+build\bin\sc2csv.exe --decode <input directory> <output directory> [--overwrite] [--flat]
+build\bin\sc2csv.exe --encode <input directory> <output directory> [--overwrite] [--flat]
+```
+
+- `--overwrite` overwrites existing output (otherwise existing files are skipped)
+- `--flat` does not preserve the input's subdirectory structure
+
+- `F12`: the CupertinoUi debug page (widget highlighting, widget-tree dump, UI script playback)
+- The window is borderless and macOS-styled; use the traffic lights at the top right, drag the title bar, or drag an edge to resize.
+
+## Output options
+
+The sidebar's "Output" section has two switches:
+
+| Switch | Default | Effect |
+|---|---|---|
+| Skip existing output files | ✔ | Skip a file whose destination already exists (the status column shows "Exists" and the log counts it as skipped); uncheck to overwrite |
+| Overwrite in place | ☐ | Don't use the output directory; rewrite the CSVs in the **input** directory directly: unpack replaces a container with text, pack replaces text with a container |
+
+With "Overwrite in place" checked: the output-directory button is disabled (this run does not write to it), and the "Skip existing output files" row is hidden — in-place writing overwrites exactly the file it reads, so skipping makes no sense. In-place mode applies to both directions and **always writes back**, regardless of the skip switch.
+
+The start button follows the mode: "Unpack" in unpack mode, "Pack" in pack mode.
+
+**Switching modes clears the input/output directories**: the two directions use the directories differently (unpack reads containers, pack reads text). Rather than guessing which one to reuse, both are reset, so a mode switch leaves a clean initial state and never runs with the previous direction's paths.
+
+## Menu bar
+
+The menu bar sits below the title bar. Mode, language and About live there; output options and the file list are in the main window:
+
+| Title | Items | Shortcuts |
+|---|---|---|
+| File | Choose input directory…, Choose output directory…, Rescan, Quit | `Ctrl+O`, `Ctrl+Shift+O`, `Ctrl+R`, `Ctrl+Q` |
+| Mode: Unpack / Mode: Pack | Unpack, Pack (the current mode is checked and the title follows it; switching clears input/output) | |
+| Language | 中文 / English / 日本語 (the current language is checked) | |
+| About | Clicking the title opens the About panel directly instead of expanding a menu | |
+
+About uses the framework's `MenuBarAction` (clicking the title acts immediately); the same mechanism now includes `MenuBarToggle` in `third_party/cupertino/window/MenuBar.*` (draws a 12 pt checkbox and flips the value).
+
+Menu text comes from the `menu.*` and `about.*` keys in `src/i18n/*.csv` (the mode title is `menu.mode_title`, with `%s` replaced by the current mode). A `\n` in a table cell is a line break (the About body is two lines).
+
+## Translations
+
+Language tables live in `src/i18n/*.csv`. At build time `cmake/GenerateI18n.cmake` merges them into `build/generated/i18n_data.inc` (`kLanguageNames` plus the `kLanguages` array), and `sc2csv::Translator` parses them at run time:
+
+- `$lang:` language code, `$name:` menu name, `$order:` menu order
+- The body is a two-column CSV: `ID,Text`; quote a value containing commas
+- Adding a language: drop a `.csv` with the same format into `src/i18n/` and rebuild; CMake regenerates the table
+- The Language menu switches immediately; `--lang` picks the startup language
+- Without `--lang` the system UI language is followed (Chinese/Japanese, English otherwise)
+- Log lines already written are not re-translated; later lines use the new language
+
+`sc2csv::AvailableLanguages()` returns the built-in languages (code + name).
+
+## Layout
+
+```text
+sc2csv/
+├─ CMakeLists.txt
+├─ build.bat / build.ps1 / configure.bat
+├─ cmake/
+│  ├─ GenerateI18n.cmake  src/i18n/*.csv → build/generated/i18n_data.inc
+│  └─ GenerateIcon.py     icon/ico.png → build/generated/icon/*.ico + src/generated/AboutIcon.h
+├─ icon/
+│  └─ ico.png             the only icon source
+├─ src/
+│  ├─ main.cpp        interface, scan/unpack scheduling, log
+│  ├─ csv_codec.*     CSV container header parsing, LZMA decoding, three-row CSV parsing
+│  ├─ csv_project.*   directory scanning, output paths, per-file conversion, UTF-8 paths
+│  ├─ i18n.h/.cpp     translation table loading and lookup
+│  └─ i18n/           zh-cn.csv / en-us.csv / ja-jp.csv
+└─ third_party/
+   ├─ cupertino/      vendored CupertinoUi UI framework (MIT)
+   └─ lzma/           LZMA SDK decoder (public domain)
+```
+
+## Known limitations
+
+- The interface font is a baked CupertinoUi subset: Chinese renders correctly; RTL languages such as Arabic show `?`.
+- The preview shows only the first 400 rows and 24 columns; the full content is written to the output file.
+- `.zflex` and SC-related resources are out of scope.
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+| Component | License |
+|---|---|
+| CupertinoUi (`third_party/cupertino`) | MIT |
+| LZMA SDK (`third_party/lzma`) | public domain |
+| Dear ImGui (fetched at build time) | MIT |
+| GLFW (fetched at build time) | zlib/libpng |
+| stb_image | public domain / MIT |
+
+CupertinoUi's baked font and symbol data derives from Apple's SF Pro / SF Symbols and is not covered by the MIT license. See [third_party/cupertino/NOTICE.md](third_party/cupertino/NOTICE.md). Full attribution is in [NOTICE](NOTICE).
+
+---
+
+# 中文
+
+[English](#sc2csv) | 中文
+
 Brawl Stars CSV 解包工具（Windows 桌面端）。
 
 - 单页界面：扫描 `assets/csv_logic`、`assets/csv_client`、`assets/localization`，支持两个方向：
