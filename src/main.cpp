@@ -1,4 +1,4 @@
-// sc2csv — Brawl Stars CSV 解包工具
+// sc2csv — Supercell CSV 解包工具
 //
 // 解码 assets/csv_logic、assets/csv_client、assets/localization 下由「9 字节头 + raw LZMA1」
 // 构成的 CSV 容器。页面：解包 / 浏览 / 日志。

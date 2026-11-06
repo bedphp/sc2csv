@@ -119,7 +119,7 @@ error.write_failed,写入输出文件失败
 error.input_missing,输入目录不存在
 error.output_exists,输出已存在，已跳过
 error.create_dir_failed,无法创建输出目录
-cli.help,"sc2csv-cli %s - Brawl Stars CSV 解包 / 打包工具\n\n用法：\n  sc2csv-cli --decode <输入> <输出> [选项]\n  sc2csv-cli --encode <输入> <输出> [选项]\n  sc2csv-cli --decode <输入> --in-place [选项]\n  sc2csv-cli --encode <输入> --in-place [选项]\n\n<输入> 可以是目录：扫描其中的 csv_logic、csv_client、localization 文件夹，\n没有这些文件夹时递归扫描所有 .csv；也可以是单个 .csv 文件。\n\n选项：\n  --decode        解包容器为明文 CSV\n  --encode        把明文 CSV 打包成容器\n  --overwrite     覆盖已存在的输出文件（默认跳过）\n  --flat          不保留输入的子目录结构\n  --in-place      直接写回输入文件，不需要 <输出>\n  -q, --quiet     只输出失败项和汇总\n  -h, --help      显示帮助\n  --version       显示版本\n  --lang <代码>   界面语言：zh-cn、en-us、ja-jp\n\n退出码：\n  0  全部成功或跳过\n  1  至少一个文件失败\n  2  参数错误，或输入无法扫描\n"
+cli.help,"sc2csv-cli %s - Supercell CSV 解包 / 打包工具\n\n用法：\n  sc2csv-cli --decode <输入> <输出> [选项]\n  sc2csv-cli --encode <输入> <输出> [选项]\n  sc2csv-cli --decode <输入> --in-place [选项]\n  sc2csv-cli --encode <输入> --in-place [选项]\n\n<输入> 可以是目录：扫描其中的 csv_logic、csv_client、localization 文件夹，\n没有这些文件夹时递归扫描所有 .csv；也可以是单个 .csv 文件。\n\n选项：\n  --decode        解包容器为明文 CSV\n  --encode        把明文 CSV 打包成容器\n  --overwrite     覆盖已存在的输出文件（默认跳过）\n  --flat          不保留输入的子目录结构\n  --in-place      直接写回输入文件，不需要 <输出>\n  -q, --quiet     只输出失败项和汇总\n  -h, --help      显示帮助\n  --version       显示版本\n  --lang <代码>   界面语言：zh-cn、en-us、ja-jp\n\n退出码：\n  0  全部成功或跳过\n  1  至少一个文件失败\n  2  参数错误，或输入无法扫描\n"
 cli.error.unknown_option,未知选项：%s
 cli.error.mode,请指定 --decode 或 --encode 之一
 cli.error.missing_input,缺少 <输入>
