@@ -2,6 +2,10 @@
 
 English | [中文](#中文)
 
+> **Important**
+>
+> This repository does not provide any instructions on how to modify any Supercell game or their assets. All information and all Assets were taken from public sources. You assume all risks from the use of this tool.
+
 A Windows desktop tool for unpacking and packing Brawl Stars CSV files.
 
 - Single-page interface: scans `assets/csv_logic`, `assets/csv_client`, and `assets/localization`, in both directions:
@@ -195,6 +199,10 @@ CupertinoUi's baked font and symbol data derives from Apple's SF Pro / SF Symbol
 # 中文
 
 [English](#sc2csv) | 中文
+
+> **重要**
+>
+> 本仓库不提供任何修改 Supercell 游戏或其资源的说明。所有信息和资源均来自公开来源。使用本工具所产生的一切风险由使用者自行承担。
 
 Brawl Stars CSV 解包工具（Windows 桌面端）。
 
