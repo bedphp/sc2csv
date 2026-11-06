@@ -1,0 +1,13 @@
+# Normalize to LF in the repository; the working tree follows the platform.
+* text=auto
+
+# Windows scripts must keep CRLF in every checkout.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Images are copied byte for byte.
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary

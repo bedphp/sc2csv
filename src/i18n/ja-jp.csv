@@ -1,0 +1,105 @@
+$lang:ja-jp
+$name:日本語
+$order:2
+ID,Text
+app.name,sc2csv
+app.build,ローカル処理 · ビルド
+menu.unpack,解凍
+menu.pack,圧縮
+menu.language,言語
+menu.about,情報
+menu.input,入力フォルダーを選択…
+menu.output,出力フォルダーを選択…
+menu.rescan,再スキャン
+menu.start_unpack,解凍を開始
+menu.start_pack,圧縮を開始
+menu.cancel,キャンセル
+menu.about_app,sc2csv について
+menu.quit,終了
+menu.language.zh,中文
+menu.language.en,English
+menu.language.ja,日本語
+about.title,sc2csv について
+about.body,CSV の解凍と圧縮ツールです。\nLZMA コンテナと通常の CSV に対応します。
+about.close,OK
+mode.unpack,解凍
+mode.pack,圧縮
+sidebar.workdir,作業フォルダー
+sidebar.input,入力
+sidebar.output,出力
+sidebar.choose_input,入力フォルダーを選択…
+sidebar.choose_output,出力フォルダーを選択…
+sidebar.not_selected,未選択
+sidebar.options,変換オプション
+sidebar.skip_existing,既存の出力ファイルをスキップ
+sidebar.in_place,元の場所へ上書き
+sidebar.in_place_note,入力フォルダーの CSV を直接書き換えます（出力先不要・スキップなし）
+sidebar.output_in_place,元の場所へ上書き：入力フォルダー
+sidebar.rescan,再スキャン
+sidebar.overview,スキャン概要
+sidebar.discovered,検出済み
+sidebar.selected,選択中
+common.files,%zu ファイル
+common.items,%zu 個
+main.search,ファイルを検索…
+main.select_all,すべて選択
+main.select_none,選択を解除
+main.selected,選択
+main.empty_title,入力フォルダーを選択して開始
+main.empty_desc,csv_logic、csv_client、localization を含むフォルダーを選択してください
+main.empty_button,入力フォルダーを選択…
+main.scan_failed,スキャンに失敗しました
+main.no_match,一致するファイルがありません
+main.scan_failed_desc,権限を確認して再スキャンしてください
+main.no_match_desc,検索を消去するか再スキャンしてください
+table.name,ファイル名
+table.status,状態
+log.title,実行ログ
+log.all,すべて
+log.info,情報
+log.warning,警告
+log.error,エラー
+log.clear,消去
+log.export,書き出す…
+log.none,ログはありません
+log.filtered,条件に一致するログはありません
+notice.title,フォルダーが必要です
+notice.input,開始する前に入力フォルダーを選択してください。
+notice.output,開始する前に出力フォルダーを選択してください。
+format.plain,通常の CSV
+format.unknown,不明
+status.pending,待機中
+status.running,処理中…
+status.done,完了
+status.failed,失敗
+status.skipped,存在します
+about.description,ローカル処理ツール
+main.selected_count,選択 %d / %d
+main.unpacking,解凍中：%s
+main.packing,圧縮中：%s
+log.count,%zu 件
+log.scan_failed,スキャンに失敗しました：%s
+log.scan_summary,"スキャン完了：%zu 個の CSV コンテナ（csv_logic %d、csv_client %d、localization %d）"
+log.cancelled,キャンセル：成功 %d、スキップ %d、失敗 %d、%.1f 秒
+log.finished,完了：成功 %d、スキップ %d、失敗 %d、%.1f 秒
+log.need_input,先に入力フォルダーを選択してください
+log.need_output,先に出力フォルダーを選択してください
+log.no_selection_unpack,解凍するファイルが選択されていません
+log.no_selection_pack,圧縮するファイルが選択されていません
+log.start_unpack,解凍を開始：%zu ファイル → %s
+log.start_pack,圧縮を開始：%zu ファイル → %s
+log.skipped,%s  存在するためスキップ
+log.decode_failed,%s  解凍失敗：%s
+log.encode_failed,%s  圧縮失敗：%s
+log.export_failed,ログの書き出しに失敗：%s に書き込めません
+log.exported,ログを書き出しました：%s
+table.format,形式
+table.size,サイズ
+toolbar.language,言語
+toolbar.mode,モード
+notice.selection_title,ファイルが未選択
+notice.selection,変換するファイルを選択してから開始してください。
+menu.file,ファイル
+menu.convert,変換
+menu.options,オプション
+menu.mode_title,モード：%s

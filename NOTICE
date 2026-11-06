@@ -1,0 +1,29 @@
+sc2csv
+Copyright 2026 bedphp
+
+This product includes software developed by third parties:
+
+  CupertinoUi
+  Copyright (c) 2026 MisterJerkins
+  MIT License
+  https://github.com/MisterJerkins/imgui-apple
+
+  LZMA SDK
+  Public domain
+  https://www.7-zip.org/sdk.html
+
+  Dear ImGui (fetched at build time)
+  MIT License
+  https://github.com/ocornut/imgui
+
+  GLFW (fetched at build time)
+  zlib/libpng License
+  https://www.glfw.org/
+
+  stb_image
+  Public domain / MIT
+  https://github.com/nothings/stb
+
+The baked font and symbol data under third_party/cupertino/core/generated/
+is derived from Apple's SF Pro, SF Mono and SF Symbols and is not covered by
+the MIT license. See third_party/cupertino/NOTICE.md for details.

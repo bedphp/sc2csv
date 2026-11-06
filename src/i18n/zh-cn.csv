@@ -1,0 +1,105 @@
+$lang:zh-cn
+$name:中文
+$order:0
+ID,Text
+app.name,sc2csv
+app.build,纯本地处理 · 构建
+menu.unpack,解包
+menu.pack,压缩
+menu.language,语言
+menu.about,关于
+menu.input,选择输入目录…
+menu.output,选择输出目录…
+menu.rescan,重新扫描
+menu.start_unpack,开始解包
+menu.start_pack,开始打包
+menu.cancel,取消
+menu.about_app,关于 sc2csv
+menu.quit,退出
+menu.language.zh,中文
+menu.language.en,English
+menu.language.ja,日本語
+about.title,关于 sc2csv
+about.body,CSV 解包与打包工具。\n支持 LZMA 容器和明文 CSV。
+about.close,确定
+mode.unpack,解包
+mode.pack,打包
+sidebar.workdir,工作目录
+sidebar.input,输入
+sidebar.output,输出
+sidebar.choose_input,选择输入目录…
+sidebar.choose_output,选择输出目录…
+sidebar.not_selected,尚未选择
+sidebar.options,转换选项
+sidebar.skip_existing,跳过已存在的输出文件
+sidebar.in_place,原地覆盖
+sidebar.in_place_note,直接改写输入目录里的 CSV；不需要输出目录，也不会跳过
+sidebar.output_in_place,原地覆盖：使用输入目录
+sidebar.rescan,重新扫描
+sidebar.overview,扫描概览
+sidebar.discovered,已发现
+sidebar.selected,当前选择
+common.files,%zu 个文件
+common.items,%zu 个
+main.search,搜索文件…
+main.select_all,全选
+main.select_none,全不选
+main.selected,已选
+main.empty_title,从选择输入目录开始
+main.empty_desc,选择包含 csv_logic、csv_client 或 localization 的目录
+main.empty_button,选择输入目录…
+main.scan_failed,扫描未完成
+main.no_match,没有匹配的文件
+main.scan_failed_desc,检查目录权限后重新扫描
+main.no_match_desc,试试清除搜索内容或重新扫描
+table.name,文件名
+table.status,状态
+log.title,运行日志
+log.all,全部
+log.info,信息
+log.warning,警告
+log.error,错误
+log.clear,清空
+log.export,导出…
+log.none,暂无日志
+log.filtered,没有符合筛选条件的日志
+notice.title,目录未设置
+notice.input,请先选择输入目录，再开始转换。
+notice.output,请先选择输出目录，再开始转换。
+format.plain,明文
+format.unknown,未知
+status.pending,待处理
+status.running,处理中…
+status.done,已完成
+status.failed,失败
+status.skipped,已存在
+about.description,本地处理工具
+main.selected_count,已选 %d / %d
+main.unpacking,正在解包：%s
+main.packing,正在打包：%s
+log.count,%zu 条
+log.scan_failed,扫描失败：%s
+log.scan_summary,"扫描完成：%zu 个 CSV 容器（csv_logic %d，csv_client %d，localization %d）"
+log.cancelled,已取消：成功 %d，跳过 %d，失败 %d，用时 %.1f 秒
+log.finished,完成：成功 %d，跳过 %d，失败 %d，用时 %.1f 秒
+log.need_input,请先选择输入目录
+log.need_output,请先选择输出目录
+log.no_selection_unpack,没有选择要解包的文件
+log.no_selection_pack,没有选择要打包的文件
+log.start_unpack,开始解包 %zu 个文件 → %s
+log.start_pack,开始打包 %zu 个文件 → %s
+log.skipped,%s  已存在，跳过
+log.decode_failed,%s  解压失败：%s
+log.encode_failed,%s  压缩失败：%s
+log.export_failed,日志导出失败：无法写入 %s
+log.exported,日志已导出到 %s
+table.format,格式
+table.size,大小
+toolbar.language,语言
+toolbar.mode,模式
+notice.selection_title,未选择文件
+notice.selection,请先勾选要转换的文件，再开始。
+menu.file,文件
+menu.convert,转换
+menu.options,选项
+menu.mode_title,模式：%s

@@ -1,0 +1,31 @@
+# Build trees (Ninja output, fetched dependencies, generated files)
+build/
+build-debug/
+build-*/
+out/
+
+# Editors
+.vs/
+.vscode/
+*.user
+
+# Compiler and linker output
+*.log
+*.obj
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
+
+# Local debugging leftovers
+/test_resize.vbs
+
+# OS metadata
+Thumbs.db
+desktop.ini
+.DS_Store

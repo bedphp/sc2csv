@@ -1,0 +1,105 @@
+$lang:en-us
+$name:English
+$order:1
+ID,Text
+app.name,sc2csv
+app.build,Local processing · Build
+menu.unpack,Unpack
+menu.pack,Pack
+menu.language,Language
+menu.about,About
+menu.input,Choose Input Folder…
+menu.output,Choose Output Folder…
+menu.rescan,Rescan
+menu.start_unpack,Start Unpack
+menu.start_pack,Start Pack
+menu.cancel,Cancel
+menu.about_app,About sc2csv
+menu.quit,Quit
+menu.language.zh,中文
+menu.language.en,English
+menu.language.ja,日本語
+about.title,About sc2csv
+about.body,CSV unpacker and packer.\nSupports LZMA containers and plain CSV.
+about.close,OK
+mode.unpack,Unpack
+mode.pack,Pack
+sidebar.workdir,Working folders
+sidebar.input,Input
+sidebar.output,Output
+sidebar.choose_input,Choose Input Folder…
+sidebar.choose_output,Choose Output Folder…
+sidebar.not_selected,Not selected
+sidebar.options,Conversion options
+sidebar.skip_existing,Skip existing output files
+sidebar.in_place,Overwrite in place
+sidebar.in_place_note,Rewrites the CSVs in the input folder; no output folder is used and nothing is skipped
+sidebar.output_in_place,In place: the input folder
+sidebar.rescan,Rescan
+sidebar.overview,Scan overview
+sidebar.discovered,Discovered
+sidebar.selected,Selected
+common.files,%zu files
+common.items,%zu items
+main.search,Search files…
+main.select_all,Select all
+main.select_none,Select none
+main.selected,Selected
+main.empty_title,Choose an input folder to begin
+main.empty_desc,"Choose a folder containing csv_logic, csv_client, or localization"
+main.empty_button,Choose Input Folder…
+main.scan_failed,Scan failed
+main.no_match,No matching files
+main.scan_failed_desc,Check folder permissions and scan again
+main.no_match_desc,Clear the search or scan again
+table.name,File name
+table.status,Status
+log.title,Run log
+log.all,All
+log.info,Info
+log.warning,Warnings
+log.error,Errors
+log.clear,Clear
+log.export,Export…
+log.none,No log entries
+log.filtered,No entries match the filter
+notice.title,Folder required
+notice.input,Choose an input folder before starting.
+notice.output,Choose an output folder before starting.
+format.plain,Plain
+format.unknown,Unknown
+status.pending,Pending
+status.running,Processing…
+status.done,Done
+status.failed,Failed
+status.skipped,Already exists
+about.description,Local processing tool
+main.selected_count,Selected %d / %d
+main.unpacking,Unpacking: %s
+main.packing,Packing: %s
+log.count,%zu entries
+log.scan_failed,Scan failed: %s
+log.scan_summary,"Scan finished: %zu CSV containers (csv_logic %d, csv_client %d, localization %d)"
+log.cancelled,"Cancelled: %d done, %d skipped, %d failed, %.1f s"
+log.finished,"Finished: %d done, %d skipped, %d failed, %.1f s"
+log.need_input,Choose an input folder first
+log.need_output,Choose an output folder first
+log.no_selection_unpack,No files selected to unpack
+log.no_selection_pack,No files selected to pack
+log.start_unpack,Unpacking %zu files → %s
+log.start_pack,Packing %zu files → %s
+log.skipped,"%s  already exists, skipped"
+log.decode_failed,%s  unpack failed: %s
+log.encode_failed,%s  pack failed: %s
+log.export_failed,Log export failed: cannot write %s
+log.exported,Log exported to %s
+table.format,Format
+table.size,Size
+toolbar.language,Language
+toolbar.mode,Mode
+notice.selection_title,No files selected
+notice.selection,Select the files to convert before starting.
+menu.file,File
+menu.convert,Convert
+menu.options,Options
+menu.mode_title,Mode: %s
